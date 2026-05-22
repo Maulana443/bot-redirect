@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔗 Menghubungkan ke Bot...</title>
+    <meta http-equiv="refresh" content="10">
+    <style>
+        body { font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #0f172a; color: #e2e8f0; }
+        .card { background: #1e293b; padding: 2rem; border-radius: 12px; text-align: center; max-width: 400px; }
+        .loader { border: 3px solid #334155; border-top: 3px solid #22c55e; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .status { margin-top: 1rem; font-size: 0.9rem; color: #94a3b8; }
+        .btn { display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background: #22c55e; color: #0f172a; text-decoration: none; border-radius: 6px; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="loader"></div>
+        <h2>🔗 Menghubungkan ke Bot...</h2>
+        <p class="status" id="status">Mencari server aktif...</p>
+        <a href="#" class="btn" id="btn" style="display:none;">Buka Dashboard</a>
+    </div>
+
+    <script>
+        const CONFIG = {
+            user: 'Maulana443',
+            repo: 'bot-redirect',
+            file: 'target.json'
+        };
+
+        async function checkTarget() {
+            const status = document.getElementById('status');
+            const btn = document.getElementById('btn');
+            
+            try {
+                const res = await fetch(`https://raw.githubusercontent.com/${CONFIG.user}/${CONFIG.repo}/main/${CONFIG.file}?t=${Date.now()}`);
+                if (!res.ok) throw new Error('Belum ada URL aktif');
+                
+                const data = await res.json();
+                if (data.url) {
+                    status.textContent = '✅ Server ditemukan! Redirecting...';
+                    status.style.color = '#22c55e';
+                    btn.href = data.url;
+                    btn.style.display = 'inline-block';
+                    setTimeout(() => window.location.href = data.url, 2000);
+                }
+            } catch (e) {
+                status.textContent = '⏳ Menunggu server online... (auto-refresh 10 detik)';
+            }
+        }
+
+        checkTarget();
+        setInterval(checkTarget, 10000);
+    </script>
+</body>
+</html>
